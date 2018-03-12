@@ -2,11 +2,13 @@ import sys
 sys.setrecursionlimit(10**8)
 from sys import argv
 import copy
+#print control
+print_loop = 0
 #Parameter Set
 #USB3 Gen2 Scrambler LFSR Configuration
 poly_num = "210124" #Polynomial Number = x^23 + x^21 + x^16 + x^8 + x^5 + x^2 + 1
 stage = 23 #LFSR Stage Number
-adv_cnt = 8 #LFSR Advance Total Number
+adv_cnt = 64 #LFSR Advance Total Number
 lfsr_list = [] #store the LFSR value
 pop_list = [] #store the poped value from the LFSR,used to xor with input data
 
@@ -67,15 +69,19 @@ def print_list(l,prefix):
 		print("")
 
 for loop_num in range(0,adv_cnt):
+	print("--------------------------")
 	print("Current Loop: " + str(loop_num))
 	lfsr_msb = lfsr_list[-1]
 	#a
-	lfsr_list.insert(0,lfsr_msb)
+	lfsr_list.insert(0,copy.copy(lfsr_msb))
 	lfsr_list.pop()
 	#c
-	pop_list.append(lfsr_msb)
+	pop_list.append(copy.copy(lfsr_msb))
 	#d
 	feedback_lfsr(lfsr_list,lfsr_msb,poly_v)
+	if(print_loop):
+		print("LFSR value is :")
+		print_list(lfsr_list,"D");
 	#add each loop LFSR value into adv_list
 	
 	for i in range(0,len(lfsr_list)):
